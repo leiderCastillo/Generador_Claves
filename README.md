@@ -1,4 +1,4 @@
-#Generador de contraseñas
+# Generador de contraseñas
 Construye un generador de contraseñas seguras para tus aplicaciones y servicios web.
 
 ## Requerimientos
