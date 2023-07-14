@@ -1,13 +1,17 @@
+import 'package:code_generator/functions/checkcharactersmin.dart';
+import 'package:code_generator/functions/generatepassword.dart';
 import 'package:code_generator/models/levelsecurity.dart';
 import 'package:code_generator/models/listcheck.dart';
 import 'package:code_generator/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 int sizeCharacter = 12;
+int minSlider = 0;
 bool minusculas= false;
 bool mayusculas= false;
 bool numeros = false;
 bool simbolos = false;
+String clavegenerada = "C0NTR4\$EÑa!";
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -51,7 +55,13 @@ class _HomeState extends State<Home> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("C0NTR4\$EÑa!",style: TextStyle(color: ColorsApp.greydark,),textScaleFactor: 1.2,),
+                      Expanded(
+                        child:
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child:Text(clavegenerada,style: TextStyle(color: ColorsApp.greydark,),textScaleFactor: 1.2,),
+                          )
+                      ),
                       IconButton(onPressed: (){}, icon: Icon(Icons.copy,color: ColorsApp.blue,))
                     ],
                   ),
@@ -64,7 +74,7 @@ class _HomeState extends State<Home> {
                   ],
                 ),
                 Slider(
-                  min: 0,
+                  min: minSlider.toDouble(),
                   max: 100,
                   value: sizeCharacter.toDouble(),
                   onChanged: (value) {
@@ -79,6 +89,9 @@ class _HomeState extends State<Home> {
                   onChanged: (value) {
                     setState(() {
                       mayusculas = value;
+                      int seleccionados = checkcharactersmin(minusculas, mayusculas, numeros, simbolos);
+                      sizeCharacter = sizeCharacter < seleccionados ? seleccionados : sizeCharacter;
+                      minSlider = seleccionados;
                     });
                   },
                 ),
@@ -88,6 +101,10 @@ class _HomeState extends State<Home> {
                   onChanged: (value) {
                     setState(() {
                       minusculas = value;
+                      int seleccionados = checkcharactersmin(minusculas, mayusculas, numeros, simbolos);
+                      sizeCharacter = sizeCharacter < seleccionados ? seleccionados : sizeCharacter;
+                      minSlider = seleccionados;
+                      
                     });
                   },
                 ),
@@ -97,6 +114,10 @@ class _HomeState extends State<Home> {
                   onChanged: (value) {
                     setState(() {
                       numeros = value;
+                      int seleccionados = checkcharactersmin(minusculas, mayusculas, numeros, simbolos);
+                      sizeCharacter = sizeCharacter < seleccionados ? seleccionados : sizeCharacter;
+                      minSlider = seleccionados;
+                      
                     });
                   },
                 ),
@@ -106,6 +127,11 @@ class _HomeState extends State<Home> {
                   onChanged: (value) {
                     setState(() {
                       simbolos = value;
+                      int seleccionados = checkcharactersmin(minusculas, mayusculas, numeros, simbolos);
+                      sizeCharacter = sizeCharacter < seleccionados ? seleccionados : sizeCharacter;
+                      minSlider = seleccionados;
+                      
+                      
                     });
                   },
                 ),
@@ -121,7 +147,16 @@ class _HomeState extends State<Home> {
                     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                     fixedSize: Size(MediaQuery.of(context).size.width, 40)
                   ),
-                  onPressed: (){},
+                  onPressed: (){
+                    if(checkcharactersmin(minusculas, mayusculas, numeros, simbolos)!= 0){
+                      setState(() {
+                        clavegenerada = generatepassword(sizeCharacter, numeros, mayusculas, minusculas, simbolos);
+                      });
+                    }else{
+                      print("No se selecciono ningun valor");
+                    }
+                    
+                  },
                   child: const Text("Generar contraseña")
                 )
                 
